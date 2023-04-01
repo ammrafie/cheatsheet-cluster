@@ -56,6 +56,7 @@ echo "Hello! The current date and time is: $current_date_time"
 ```
 
 **Creating/Running a Docker Container using Dockerfile:**
+- `dos2unix entrypoint.bash` makes windows newline-characters unix compatible.
 - `docker build -t first-image .`
 - `docker run first-image`
 - The docker build command builds an image from a dockerfile.
