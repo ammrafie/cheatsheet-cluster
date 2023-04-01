@@ -67,3 +67,39 @@ echo "Hello! The current date and time is: $current_date_time"
 - Note that, docker images are layer of images compressed together 
 - Docker creates an image for every command in Dockerfile, which are called intermediate images.
 - After finishing reading Dockerfile, it squashes all the images together into a single image.
+
+**Interacting with containers:**
+- Create `server.bash` & `server.Dockerfile` as well as run `dos2unix entrypoint.bash`
+- `docker build -f server.Dockerfile -t first-server .`
+- `docker run first-server # Be careful, Containers are not interactive by default`
+- `docker ps`, `docker kill [CONTAINER_ID] # Returns id if successfully force-stoped container`
+- `docker -d run first-server # Create+Starts container but doesn't attaches terminal`
+- `docker exec [CONTAINER_ID] date # Run additional commands from running-container`
+- `docker exec --interactive --tty [CONTAINER_ID] bash # Start terminal session within container`
+- Docker run attaches terminal to container after it starts it.
+- Meaning, containers wont accept keystrokes from our terminal even if we are attached to them.
+- Terminal session within container is helful while troubleshooting
+- Since we're gonna enter keystrokes inside terminal, we specify the flag `--interactive`
+- We use `-tty` because we're stating a shell, so it interacts properly with container's terminal.
+- Additionaly, we have to specify the shell that we want to use. E.g., `bash`
+- To exit out the shell: `CTRL+D`. Pressing this too many times logs out of the real terminal.
+
+```
+#!/bin/bash
+#Filename: server.bash
+if ! bash --version | grep -q 'version 5'; then
+  >&2 echo "ERROR: Bash not installed or not the right version."; exit 1
+fi
+echo "Server started. Press CTRL-C to stop..."; while true; do sleep 10; done
+```
+```
+# Filename: server.Dockerfile
+FROM ubuntu
+USER root
+COPY ./server.bash /
+RUN chmod 755 /server.bash
+RUN apt -y update
+RUN apt -y install bash
+USER nobody
+ENTRYPOINT [ "/server.bash" ]
+```
