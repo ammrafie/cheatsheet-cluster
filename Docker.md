@@ -73,7 +73,7 @@ echo "Hello! The current date and time is: $current_date_time"
 - `docker build -f server.Dockerfile -t first-server .`
 - `docker run first-server # Be careful, Containers are not interactive by default`
 - `docker ps`, `docker kill [CONTAINER_ID] # Returns id if successfully force-stoped container`
-- `docker -d run first-server # Create+Starts container but doesn't attaches terminal`
+- `docker run -d first-server # Create+Starts container but doesn't attaches terminal`
 - `docker exec [CONTAINER_ID] date # Run additional commands from running-container`
 - `docker exec --interactive --tty [CONTAINER_ID] bash # Start terminal session within container`
 - Docker run attaches terminal to container after it starts it.
