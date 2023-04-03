@@ -6,10 +6,10 @@
 - Open Powershell and run the commands below.
 - `docker container create hello-world:linux # SPECIFIES LINUX VERSION OF IMAGE`
 - `docker ps # LIST CONTAINERS ACTIVELY RUNNING`
-- `docker ps -all`
+- `docker ps -all`, `docker ps -a`
 - `docker container start [CONTAINER_ID] # EXECUTES THE ENTRY POINT`
-- `docker logs [CONTAINER_ID] # DISPLAY LOG MESSAGES`
-- `docker container start --attach [CONTAINER_ID] # ATTACHES TERMINAL TO CONTAINER OUTPUT`
+- `docker logs CONTAINER_ID # DISPLAY LOG MESSAGES`
+- `docker container start --attach CONTAINER_ID # ATTACHES TERMINAL TO CONTAINER OUTPUT`
 - `docker --help`, `docker network create --help # EVERY DOCKER COMMANDS ACCEPTS HELP FLAG`
 - In create command above, `hello-world` is the image & `:linux` is an Image Tag. 
 - Any other Container Exit Code except `0` means there was a problem. See `docker ps`
@@ -17,7 +17,7 @@
 
 **Creating/Running a Docker Container (Short Way):**
 - `docker run hello-world:linux`
-- `docker logs [CONTAINER_ID]`
+- `docker logs CONTAINER_ID`
 - Docker run command = Docker container create + start + attach
 - Docker run doesn't return container id. Run docker ps to check out the id.
 
@@ -72,10 +72,10 @@ echo "Hello! The current date and time is: $current_date_time"
 - Create `server.bash` & `server.Dockerfile` as well as run `dos2unix entrypoint.bash`
 - `docker build -f server.Dockerfile -t first-server .`
 - `docker run first-server # Be careful, Containers are not interactive by default`
-- `docker ps`, `docker kill [CONTAINER_ID] # Returns id if successfully force-stoped container`
+- `docker ps`, `docker kill CONTAINER_ID # Returns id if successfully force-stoped container`
 - `docker run -d first-server # Create+Starts container but doesn't attaches terminal`
-- `docker exec [CONTAINER_ID] date # Run additional commands from running-container`
-- `docker exec --interactive --tty [CONTAINER_ID] bash # Start terminal session within container`
+- `docker exec CONTAINER_ID date # Run additional commands from running-container`
+- `docker exec --interactive --tty CONTAINER_ID bash # Start terminal session within container`
 - Docker run attaches terminal to container after it starts it.
 - Meaning, containers wont accept keystrokes from our terminal even if we are attached to them.
 - Terminal session within container is helful while troubleshooting
@@ -103,3 +103,16 @@ RUN apt -y install bash
 USER nobody
 ENTRYPOINT [ "/server.bash" ]
 ```
+
+**Stoping & Removing containers**
+- `docker run -d our-server` Run a container.
+- `docker stop CONTAINER_ID` Stops containers gracefully. Might take upto 10 minutes.
+- `docker stop -t 0 CONTAINER_ID` Immediately stops container. Can result in data loss.
+- `docker rm [-f] CONTAINER_ID` Removes containers. `-f` force-removes running containers.
+- `docker ps -aq` Returns a list of all container ids.
+- `docker ps -aq | xargs docker rm` 'docker rm' is run for each line of output (ids).
+- `docker rmi` Removes a docker image.
+- `docker images` `docker rmi IMAGE_NAME` `docker rmi -f IMAGE_NAME` '-f' is for force-removal.
+- The pipe symbol feeds output from left command to the input of the command on right.
+- The `xargs` takes input and passes it as argument of another command.
+- Just like force-removing containers, `-f` with `rmi` command can also cause unpredictable behaviours.
