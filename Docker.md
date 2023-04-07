@@ -1,13 +1,14 @@
 # Using Docker
 
-#### Guide Index:
-- [Creating & Running Containers - Long Way](#creatingrunning-a-docker-container-long-way)
-- [Creating & Running Containers - Short Way](#creatingrunning-a-docker-container-short-way)
-- [Creating Dockerfiles](#creating-dockerfiles)
-- [Creating & Running Container using Dockerfile](#creatingrunning-a-docker-container-using-dockerfile)
-- [Interacting with Containers](#interacting-with-containers)
-- [Binding ports to Containers](#binding-ports-to-container)
-- [Saving data from Containers](#saving-data-from-container)
+#### Catalogue:
+- [Create & Run Container - Long Way](#creatingrunning-a-docker-container-long-way)
+- [Create & Run Container - Short Way](#creatingrunning-a-docker-container-short-way)
+- [Create Dockerfiles](#creating-dockerfiles)
+- [Create/Run Container using Dockerfile](#creatingrunning-a-docker-container-using-dockerfile)
+- [Interact with Container](#interacting-with-containers)
+- [Bind ports to Container](#binding-ports-to-container)
+- [Save data from Container](#saving-data-from-container)
+- [Push image to Docker Hub](#pushing-images-to-docker-hub)
 
 <p align="justify">Containers are created from container images. Container images are compressed & pre-packaged file system that contains your app along with its enviroment and configuration with an instruction on how to start the application. That instruction is called the entry point. If an image doesn't exist locally, docker tries to retrieve it from a container image registry. By default, docker always tries to pull from Docker Hub. The most popular way to interact with Docker Containers is Docker CLI (Command Line Interface).</p>
 
@@ -23,14 +24,14 @@
 - In create command above, `hello-world` is the image & `:linux` is an Image Tag. 
 - Any other Container Exit Code except `0` means there was a problem. See `docker ps`
 - Docker can identify a container by the first three/few characters of Container ID.
-- [Back to Top](#guide-index)
+- [Back to Top](#catalogue)
 
 #### Creating/Running a Docker Container (Short Way):
 - `docker run hello-world:linux`
 - `docker logs CONTAINER_ID`
 - Docker run command = Docker container create + start + attach
 - Docker run doesn't return container id. Run docker ps to check out the id.
-- [Back to Top](#guide-index)
+- [Back to Top](#catalogue)
 
 #### Creating Dockerfiles:
 - `FROM` instruction specifies the Parent Image from which to build off of.
@@ -43,7 +44,7 @@
 - `ENTRYPOINT` specifies the command to run after container has been created from the image.
 - *Setting default users for containers created from this image to powerless 'nobody' user*
 - *Ensures it can't break out of container & potentially change important files on our host*
-- [Back to Top](#guide-index)
+- [Back to Top](#catalogue)
 ```
 # Filename: Dockerfile
 
@@ -79,7 +80,7 @@ echo "Hello! The current date and time is: $current_date_time"
 - Note that, docker images are layer of images compressed together 
 - Docker creates an image for every command in Dockerfile, which are called intermediate images.
 - After finishing reading Dockerfile, it squashes all the images together into a single image.
-- [Back to Top](#guide-index)
+- [Back to Top](#catalogue)
 
 #### Interacting with containers:
 - Create `server.bash` & `server.Dockerfile` as well as run `dos2unix entrypoint.bash`
@@ -96,7 +97,7 @@ echo "Hello! The current date and time is: $current_date_time"
 - We use `-tty` because we're stating a shell, so it interacts properly with container's terminal.
 - Additionaly, we have to specify the shell that we want to use. E.g., `bash`
 - To exit out the shell: `CTRL+D`. Pressing this too many times logs out of the real terminal.
-- [Back to Top](#guide-index)
+- [Back to Top](#catalogue)
 
 ```
 #!/bin/bash
@@ -130,7 +131,7 @@ ENTRYPOINT [ "/server.bash" ]
 - The pipe symbol feeds output from left command to the input of the command on right.
 - The `xargs` takes input and passes it as argument of another command.
 - Just like force-removing containers, `-f` with `rmi` command can also cause unpredictable behaviours.
-- [Back to Top](#guide-index)
+- [Back to Top](#catalogue)
 
 #### Binding ports to Container:
 - `docker build -t our-web-server -f web-server.Dockerfile .`
@@ -143,9 +144,11 @@ ENTRYPOINT [ "/server.bash" ]
 - Port Mapping allows to access services running inside a container from oustide of docker.
 - Website at *https://localhost:5000* shouldn't be unaccessible before port binding.
 - Flag `-p` publishes port `portOnHost:containerExposedPort` or `outside:inside`
-- [Back to Top](#guide-index)
+- [Back to Top](#catalogue)
 
 #### Saving data from Container:
+<span align="justify">Deleting a container, all data saved within that container gets deleted. Volume Mounting, maps a folder on host to a folder on the container. Volume mounting switch: `-v` or `--volume HostFolder:ContainerFolder`. Command `docker run --rm ubuntu` removes container after it exists. `--entrypoint sh` sets to start container with shell `sh` instead of default entrypoint. The `-c` option executes commands from a string; i.e. everything inside the quotes. Using `echo` command & redirection operator (`>`), a string can be written to a file. `cat /tmp/file` reads & prints on console, contents of `/tmp/file`. Mapping a file on host that doesn't exist, will be mapped as directory within container.</span>
+
 - `docker run --rm --entrypoint sh ubuntu -c "echo 'Hello there.' > /tmp/file && cat /tmp/file"`
 - `cat /tmp/file` The file gets deleted because the container stopped.
 - `docker run --rm --entrypoint sh -v /tmp/container:/tmp ubuntu`  
@@ -158,14 +161,17 @@ ENTRYPOINT [ "/server.bash" ]
 - `docker run --rm --entrypoint sh -v /tmp/this_file_does_not_exist:/tmp/file ubuntu`  
   `-c "echo 'Hello there.' > /tmp/file && cat /tmp/file"`
 - `cat /temp/this_file_does_not_exist`
-- Deleting a container, all data saved within that container gets deleted.
-- Volume Mounting, maps a folder on host to a folder on the container.
-- Volume mounting switch: `-v` or `--volume HostFolder:ContainerFolder`. 
-- Command `docker run --rm ubuntu` removes container after it exists.
-- `--entrypoint sh` sets to start container with shell `sh` instead of default entrypoint.
-- The `-c` option executes commands from a string; i.e. everything inside the quotes.
-- Using `echo` command & redirection operator (`>`), a string can be written to a file.
-- `cat /tmp/file` reads & prints on console, contents of `/tmp/file`
-- Mapping a file on host that doesn't exist, will be mapped as directory within container.
-- [Back to Top](#guide-index)
+- [Back to Top](#catalogue)
 
+#### Pushing images to Docker Hub:
+<p align="justify">A *Container Image Registry* is used for storing and tracking container images. Container image are tracked by their *tags*, which consists of the name of the image, and optionally a colon & its version (`latest` if not provided). Docker Hub (publicly accessible) is the docker client's default container image registry. To push an image to Docker Hub, username and optionally version number is appended with image name. The `latest` automatically tag is appended if no version number is provided.</p>
+
+- Create an account on Docker Hub (Web), then locally run: `docker login`
+- `docker tag our-web-server USERNAME/our-web-server:0.0.1` Was successful if no response.
+- `docker push USERNAME/our-web-server:0.0.1`
+- `docker tag our-web-server USERNAME/our-web-server:0.0.2` Pushing with different tag/version
+- `docker push USERNAME/our-web-server:0.0.2`, `docker logout`
+- The `tag` command works similar to `mv` in linux, renaming docker images.
+- Check list of pushed docker images ( Along with `tags`) at Docker Hub (Web).
+- To remove an image from Docker Hub (Web): Settings > Delete Repository
+- [Back to Top](#catalogue)
