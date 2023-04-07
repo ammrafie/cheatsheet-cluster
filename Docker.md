@@ -6,6 +6,8 @@
 - [Creating Dockerfiles](#creating-dockerfiles)
 - [Creating & Running Container using Dockerfile](#creatingrunning-a-docker-container-using-dockerfile)
 - [Interacting with Containers](#interacting-with-containers)
+- [Binding ports to Containers](#binding-ports-to-container)
+- [Saving data from Containers](#saving-data-from-container)
 
 <p align="justify">Containers are created from container images. Container images are compressed & pre-packaged file system that contains your app along with its enviroment and configuration with an instruction on how to start the application. That instruction is called the entry point. If an image doesn't exist locally, docker tries to retrieve it from a container image registry. By default, docker always tries to pull from Docker Hub. The most popular way to interact with Docker Containers is Docker CLI (Command Line Interface).</p>
 
