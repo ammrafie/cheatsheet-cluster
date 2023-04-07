@@ -147,7 +147,7 @@ ENTRYPOINT [ "/server.bash" ]
 - [Back to Top](#catalogue)
 
 #### Saving data from Container:
-<span align="justify">Deleting a container, all data saved within that container gets deleted. Volume Mounting, maps a folder on host to a folder on the container. Volume mounting switch: `-v` or `--volume HostFolder:ContainerFolder`. Command `docker run --rm ubuntu` removes container after it exists. `--entrypoint sh` sets to start container with shell `sh` instead of default entrypoint. The `-c` option executes commands from a string; i.e. everything inside the quotes. Using `echo` command & redirection operator (`>`), a string can be written to a file. `cat /tmp/file` reads & prints on console, contents of `/tmp/file`. Mapping a file on host that doesn't exist, will be mapped as directory within container.</span>
+<p align="justify">Deleting a container, all data saved within that container gets deleted. Volume Mounting, maps a folder on host to a folder on the container. Volume mounting switch: <code>-v</code> or <code>--volume HostFolder:ContainerFolder</code>. Command <code>docker run --rm ubuntu</code> removes container after it exists. <code>--entrypoint sh</code> sets to start container with shell <code>sh</code> instead of default entrypoint. The <code>-c</code> option executes commands from a string; i.e. everything inside the quotes. Using <code>echo</code> command &amp; redirection operator (<code>&gt;</code>), a string can be written to a file. <code>cat /tmp/file</code> reads &amp; prints on console, contents of <code>/tmp/file</code>. Mapping a file on host that doesn't exist, will be mapped as directory within container.</p>
 
 - `docker run --rm --entrypoint sh ubuntu -c "echo 'Hello there.' > /tmp/file && cat /tmp/file"`
 - `cat /tmp/file` The file gets deleted because the container stopped.
@@ -164,7 +164,7 @@ ENTRYPOINT [ "/server.bash" ]
 - [Back to Top](#catalogue)
 
 #### Pushing images to Docker Hub:
-<p align="justify">A *Container Image Registry* is used for storing and tracking container images. Container image are tracked by their *tags*, which consists of the name of the image, and optionally a colon & its version (`latest` if not provided). Docker Hub (publicly accessible) is the docker client's default container image registry. To push an image to Docker Hub, username and optionally version number is appended with image name. The `latest` automatically tag is appended if no version number is provided.</p>
+<p align="justify">A <em>Container Image Registry</em> is used for storing and tracking container images. Container image are tracked by their <em>tags</em>, which consists of the name of the image, and optionally a colon &amp; its version (<code>latest</code> if not provided). Docker Hub (publicly accessible) is the docker client's default container image registry. To push an image to Docker Hub, username and optionally version number is appended with image name. The <code>latest</code> automatically tag is appended if no version number is provided.</p>
 
 - Create an account on Docker Hub (Web), then locally run: `docker login`
 - `docker tag our-web-server USERNAME/our-web-server:0.0.1` Was successful if no response.
