@@ -179,6 +179,15 @@ ENTRYPOINT [ "/server.bash" ]
 - To remove an image from Docker Hub (Web): Settings > Delete Repository
 - [Back to Top](#catalogue)
 
+#### Docker Best Practices:
+- Use Verified Images because they're more secure. Unfortunately, a ton of safe images are unverified.
+- Use a Container Image Scanner if using a verified image isn't possible. E.g., Clair, Trivy, Dagda.
+- The Scanner inspects to check for malicious layers or layers containing harmful files in the image.
+- Avoid tagging as `latest` because `latest` can be overridden making rollback difficult.
+- Also, app version will be unknown while downloading & version can change if ran `docker pull` later.
+- Use Non-root Users when creating images and running containers. It makes containers more secure.
+- [Back to Top](#catalogue)
+
 #### Problem: Can't create more Containers
 <p align="justify">Using many containers in docker, one might face "no space left on device" problem in docker. One might check disk space & see there's plenty of space available. What actually happened is, the tiny virtual machine that docker engine runs inside of, a folder within that containing images(compressed files) ran out of space. One solution to this is removing unnecessary images taking up space. One might need to force delete images if containers are using those images (Beware of Data Loss). Another solution is to delete all unused data, removing all stopped containers, unused images, intermediate layers created but no longer associated with images on ones machine and cached data that is not associated with a container.</p>
 
@@ -201,13 +210,4 @@ ENTRYPOINT [ "/server.bash" ]
 - `docker inspect alpine | less` `Restarting` `RestartCount` `Mounts` `q` 
 - We can feed the output of `inspect` command to the `less` command using a pipe (`|`).
 - `less` breaks up long text by sending it to a viewer(paginating). Press `q` to get out of viewer.
-- [Back to Top](#catalogue)
-
-#### Docker Best Practices:
-- Use Verified Images because they're more secure. Unfortunately, a ton of safe images are unverified.
-- Use a Container Image Scanner if using a verified image isn't possible. E.g., Clair, Trivy, Dagda.
-- The Scanner inspects to check for malicious layers or layers containing harmful files in the image.
-- Avoid tagging as `latest` because `latest` can be overridden making rollback difficult.
-- Also, app version will be unknown while downloading & version can change if ran `docker pull` later.
-- Use Non-root Users when creating images and running containers. It makes containers more secure.
 - [Back to Top](#catalogue)
