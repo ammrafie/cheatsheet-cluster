@@ -9,6 +9,8 @@
 - [Bind ports to Container](#binding-ports-to-container)
 - [Save data from Container](#saving-data-from-container)
 - [Push image to Docker Hub](#pushing-images-to-docker-hub)
+- [Problem: Can't create more Container](#problem-cant-create-more-containers)
+- [Problem: Debug slow Container](#problem-debug-slow-containers)
 
 <p align="justify">Containers are created from container images. Container images are compressed & pre-packaged file system that contains your app along with its enviroment and configuration with an instruction on how to start the application. That instruction is called the entry point. If an image doesn't exist locally, docker tries to retrieve it from a container image registry. By default, docker always tries to pull from Docker Hub. The most popular way to interact with Docker Containers is Docker CLI (Command Line Interface).</p>
 
@@ -147,7 +149,7 @@ ENTRYPOINT [ "/server.bash" ]
 - [Back to Top](#catalogue)
 
 #### Saving data from Container:
-<p align="justify">Deleting a container, all data saved within that container gets deleted. Volume Mounting, maps a folder on host to a folder on the container. Volume mounting switch: <code>-v</code> or <code>--volume HostFolder:ContainerFolder</code>. Command <code>docker run --rm ubuntu</code> removes container after it exists. <code>--entrypoint sh</code> sets to start container with shell <code>sh</code> instead of default entrypoint. The <code>-c</code> option executes commands from a string; i.e. everything inside the quotes. Using <code>echo</code> command &amp; redirection operator (<code>&gt;</code>), a string can be written to a file. <code>cat /tmp/file</code> reads &amp; prints on console, contents of <code>/tmp/file</code>. Mapping a file on host that doesn't exist, will be mapped as directory within container.</p>
+<p align="justify">Deleting a container, all data saved within that container gets deleted. Volume Mounting, maps a folder on host to a folder on the container. Volume mounting switch: <code>-v</code> or <code>--volume HostFolder:ContainerFolder</code>. Command <code>docker run --rm ubuntu</code> removes container after it exits. <code>--entrypoint sh</code> sets to start container with shell <code>sh</code> instead of default entrypoint. The <code>-c</code> option executes commands from a string; i.e. everything inside the quotes. Using <code>echo</code> command &amp; redirection operator (<code>&gt;</code>), a string can be written to a file. <code>cat /tmp/file</code> reads &amp; prints on console, contents of <code>/tmp/file</code>. Mapping a file on host that doesn't exist, will be mapped as directory within container.</p>
 
 - `docker run --rm --entrypoint sh ubuntu -c "echo 'Hello there.' > /tmp/file && cat /tmp/file"`
 - `cat /tmp/file` The file gets deleted because the container stopped.
@@ -174,4 +176,28 @@ ENTRYPOINT [ "/server.bash" ]
 - The `tag` command works similar to `mv` in linux, renaming docker images.
 - Check list of pushed docker images ( Along with `tags`) at Docker Hub (Web).
 - To remove an image from Docker Hub (Web): Settings > Delete Repository
+- [Back to Top](#catalogue)
+
+#### Problem: Can't create more Containers
+<p align="justify">Using many containers in docker, one might face "no space left on device" problem in docker. One might check disk space & see there's plenty of space available. What actually happened is, the tiny virtual machine that docker engine runs inside of, a folder within that containing images(compressed files) ran out of space. One solution to this is removing unnecessary images taking up space. One might need to force delete images if containers are using those images (Beware of Data Loss). Another solution is to delete all unused data, removing all stopped containers, unused images, intermediate layers created but no longer associated with images on ones machine and cached data that is not associated with a container.</p>
+
+- `docker run --name=app --rm openjdk:19` # Trying to build java app with openjdk:19 image
+- `df -h` `docker images` `docker rmi nginx selenium/standalone-chrome` `docker rmi -f IMAGE_NAME`
+- `docker system prune` smartly removes useless data taking disk space. (Reclaim serious space)
+- `docker run --name=app --rm openjdk:19` Run again to check it successful
+- The command `df` stands for disk free and `-h` flag stands for human-readable
+- [Back to Top](#catalogue)
+
+#### Problem: Debug slow Containers
+<p align="justify">Among other techniques, one can use <code>stats</code>, <code>top</code>, <code>inspect</code> command to diagnose slow containers. Alpine Linux (extremely small &amp; bare bones) is a great fit for docker because of it's small size to create small images that downloads quickly. To make a container run indefinitely, we set the <code>entrypoint</code> to <code>sleep</code> and provide an argument <code>infinity</code> which puts the container to sleep forever. The <code>yes</code> program (prints yes indefinitely) increases CPU consumption.</p>
+
+- `docker run --name=alpine --entrypoint=sleep -d alpine infinity` `docker ps`
+- `docker stats ID_OR_NAME_OF_CONTAINER` Snapshot of container's performance as it's running.
+- `docker exec -i -t alpine sh` `yes` NOTE: Run commands in another shell & check docker stats.
+- `docker exec -d alpine sleep infinity` Run(3times) three sleep processes.  `-d` stands for detach.
+- `docker top alpine` Display processes running inside container without having to exec into it.
+- `docker inspect alpine` Shows advanced info about container that's running in JSON format.
+- `docker inspect alpine | less` `Restarting` `RestartCount` `Mounts` `q` 
+- We can feed the output of `inspect` command to the `less` command using a pipe (`|`).
+- `less` breaks up long text by sending it to a viewer(paginating). Press `q` to get out of viewer.
 - [Back to Top](#catalogue)
