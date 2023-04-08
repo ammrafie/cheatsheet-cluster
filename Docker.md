@@ -9,6 +9,7 @@
 - [Bind ports to Container](#binding-ports-to-container)
 - [Save data from Container](#saving-data-from-container)
 - [Push image to Docker Hub](#pushing-images-to-docker-hub)
+- [Docker Best Practices](#docker-best-practices)
 - [Problem: Can't create more Container](#problem-cant-create-more-containers)
 - [Problem: Debug slow Container](#problem-debug-slow-containers)
 
@@ -200,4 +201,13 @@ ENTRYPOINT [ "/server.bash" ]
 - `docker inspect alpine | less` `Restarting` `RestartCount` `Mounts` `q` 
 - We can feed the output of `inspect` command to the `less` command using a pipe (`|`).
 - `less` breaks up long text by sending it to a viewer(paginating). Press `q` to get out of viewer.
+- [Back to Top](#catalogue)
+
+#### Docker Best Practices:
+- Use Verified Images because they're more secure. Unfortunately, a ton of safe images are unverified.
+- Use a Container Image Scanner if using a verified image isn't possible. E.g., Clair, Trivy, Dagda.
+- The Scanner inspects to check for malicious layers or layers containing harmful files in the image.
+- Avoid tagging as `latest` because `latest` can be overridden making rollback difficult.
+- Also, app version will be unknown while downloading & version can change if ran `docker pull` later.
+- Use Non-root Users when creating images and running containers. It makes containers more secure.
 - [Back to Top](#catalogue)
